@@ -60,6 +60,7 @@ export const Home = () => {
       currentPage,
     };
     setSearchParams(params);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryId, sortType, currentPage]);
 
   React.useEffect(() => {
@@ -76,6 +77,7 @@ export const Home = () => {
         sort,
       }),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //render
