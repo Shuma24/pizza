@@ -1,10 +1,10 @@
 import React from 'react';
 
-export function Categories() {
-  const [activeCategory, setActiveCategory] = React.useState(0);
+export function Categories({ categoryId, setId }) {
   const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
+
   const seLectCategory = (index) => {
-    setActiveCategory(index);
+    setId(index);
   };
 
   return (
@@ -15,7 +15,7 @@ export function Categories() {
             <li
               key={index}
               onClick={() => seLectCategory(index)}
-              className={activeCategory === index ? 'active' : ''}>
+              className={categoryId === index ? 'active' : ''}>
               {value}
             </li>
           );
