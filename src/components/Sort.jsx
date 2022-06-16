@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSort } from '../redux/slices/filterSlice';
 
@@ -30,11 +30,15 @@ export const values = [
 ];
 
 export function Sort() {
+  //libs
   const dispatch = useDispatch();
-  const sort = useSelector((state) => state.filter.sort);
+  const sortRef = useRef();
 
+  //values
+  const sort = useSelector((state) => state.filter.sort);
   const [open, setOpen] = React.useState(false);
 
+  //logic page
   const showHideSort = () => {
     setOpen(!open);
   };
@@ -44,8 +48,21 @@ export function Sort() {
     setOpen(false);
   };
 
+  React.useEffect(() => {
+    const handleClick = (event) => {
+      if (!event.path.includes(sortRef.current)) {
+        setOpen(false);
+      }
+    };
+
+    document.body.addEventListener('click', handleClick);
+
+    return () => document.body.removeEventListener('click', handleClick);
+  }, []);
+
+  //render
   return (
-    <div className="sort">
+    <div ref={sortRef} className="sort">
       <div className="sort__label">
         <svg
           width="10"

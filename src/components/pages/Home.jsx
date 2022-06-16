@@ -7,7 +7,7 @@ import { Sort } from '../Sort';
 import { Pagination } from '../Pagination/Pagination';
 import { searchContext } from '../../App';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCategoryId, setFilters } from '../../redux/slices/filterSlice';
+import { setCategoryId, setCurrentPage, setFilters } from '../../redux/slices/filterSlice';
 import { useSearchParams } from 'react-router-dom';
 import { values } from '../Sort';
 
@@ -18,11 +18,12 @@ export const Home = () => {
   const sortType = useSelector((state) => state.filter.sort.sortProperty);
   const { searchPizza } = React.useContext(searchContext);
   const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = useSelector((state) => state.filter.currentPage);
 
   // states
+  const isMounted = React.useRef(false);
   const [pizzas, setPizzas] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
-  const [currentPage, setCurrentPage] = React.useState(1);
 
   //custom func
   const setOnClickCategoryyId = (index) => {
@@ -54,29 +55,40 @@ export const Home = () => {
   //query params
 
   React.useEffect(() => {
-    let params = {
-      sortType,
-      categoryId,
-      currentPage,
-    };
-    setSearchParams(params);
+    if (isMounted.current) {
+      let params = {
+        sortType,
+        categoryId,
+        currentPage,
+      };
+      setSearchParams(params);
+    }
+
+    isMounted.current = true;
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryId, sortType, currentPage]);
 
   React.useEffect(() => {
-    const params = {
-      sort: searchParams.get('sortType'),
-      categoryId: searchParams.get('categoryId'),
-      currentPage: searchParams.get('currentPage'),
-    };
+    if (
+      searchParams.has('sortType') &&
+      searchParams.has('categoryId') &&
+      searchParams.has('currentPage')
+    ) {
+      const params = {
+        sort: searchParams.get('sortType'),
+        categoryId: searchParams.get('categoryId'),
+        currentPage: searchParams.get('currentPage'),
+      };
 
-    const sort = values.find((obj) => obj.sortProperty === params.sort);
-    dispatch(
-      setFilters({
-        ...params,
-        sort,
-      }),
-    );
+      const sort = values.find((obj) => obj.sortProperty === params.sort);
+      dispatch(
+        setFilters({
+          ...params,
+          sort,
+        }),
+      );
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -92,7 +104,7 @@ export const Home = () => {
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? skeleton : piazzaContent}</div>
-      <Pagination setCurrentPage={(index) => setCurrentPage(index)} />
+      <Pagination setCurrentPage={(index) => dispatch(setCurrentPage(index))} />
     </div>
   );
 };
