@@ -4,27 +4,27 @@ import { setSort } from '../redux/slices/filterSlice';
 
 export const values = [
   {
-    name: 'популярности (DESC)',
+    name: 'популярності (DESC)',
     sortProperty: 'rating',
   },
   {
-    name: 'популярности (ASC)',
+    name: 'популярності (ASC)',
     sortProperty: '-rating',
   },
   {
-    name: 'цене (DESC)',
+    name: 'ціні (DESC)',
     sortProperty: 'price',
   },
   {
-    name: 'цене (ASC)',
+    name: 'ціні (ASC)',
     sortProperty: '-price',
   },
   {
-    name: 'алфавиту (DESC)',
+    name: 'алфавіту (DESC)',
     sortProperty: 'title',
   },
   {
-    name: 'алфавиту (ASC)',
+    name: 'алфавіту (ASC)',
     sortProperty: '-title',
   },
 ];

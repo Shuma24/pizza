@@ -1,7 +1,7 @@
 import React from 'react';
 
 export function Categories({ categoryId, setId }) {
-  const categories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые'];
+  const categories = ['Всі', 'Мясні', 'Веган', 'Гриль', 'Остра', 'Закрита'];
 
   const seLectCategory = (index) => {
     setId(index);

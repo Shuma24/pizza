@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addProduct } from '../../redux/slices/cartSlice';
 
 // values
@@ -30,11 +30,13 @@ export function PizzaBlock(props) {
       price,
       imageUrl,
       types: pizzaTypes[activeType],
-      sizes: activeSize,
+      sizes: sizes[activeSize],
     };
     dispatch(addProduct(product));
   };
 
+  const cartItem = useSelector((state) => state.cart.product.find((obj) => obj.id === id));
+  const addCount = cartItem ? cartItem.count : 0;
   //render
   return (
     <div className="pizza-block-wrapper">
@@ -78,7 +80,7 @@ export function PizzaBlock(props) {
               />
             </svg>
             <span>Добавить</span>
-            <i>0</i>
+            {addCount > 0 && <i>{addCount}</i>}
           </button>
         </div>
       </div>

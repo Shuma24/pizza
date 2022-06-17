@@ -357,9 +357,9 @@ body {
   }
 
   &--empty {
-    margin: 0 auto;
-    width: 560px;
-    text-align: center;
+   display:flex;
+   flex-direction: column;
+   text-align: center;
 
     h2 {
       font-size: 32px;

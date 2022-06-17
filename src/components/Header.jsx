@@ -7,6 +7,8 @@ export function Header() {
   //values
   const { product, totalPirce } = useSelector((state) => state.cart);
 
+  const totalCount = product.reduce((sum, item) => sum + item.count, 0);
+
   //render
   return (
     <div className="header">
@@ -16,7 +18,7 @@ export function Header() {
             <img width="38" src={headerLogo} alt="Pizza logo" />
             <div>
               <h1>React Pizza</h1>
-              <p>самая вкусная пицца во вселенной</p>
+              <p>найсмачніша піцца у світі</p>
             </div>
           </div>
         </Link>
@@ -53,7 +55,7 @@ export function Header() {
                 strokeLinejoin="round"
               />
             </svg>
-            <span>{product.length}</span>
+            <span>{totalCount}</span>
           </Link>
         </div>
       </div>
