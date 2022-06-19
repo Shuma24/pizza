@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setSort } from '../redux/slices/filterSlice';
+import { setSort, filterSelector } from '../redux/slices/filterSlice';
 
 export const values = [
   {
@@ -35,7 +35,7 @@ export function Sort() {
   const sortRef = useRef();
 
   //values
-  const sort = useSelector((state) => state.filter.sort);
+  const { sort } = useSelector(filterSelector);
   const [open, setOpen] = React.useState(false);
 
   //logic page

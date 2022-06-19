@@ -22,6 +22,10 @@ const filterSlice = createSlice({
       state.sort = action.payload;
     },
 
+    setSearch(state, action) {
+      state.searchValue = action.payload;
+    },
+
     setCurrentPage(state, action) {
       state.currentPage = action.payload;
     },
@@ -30,10 +34,15 @@ const filterSlice = createSlice({
       state.sort = action.payload.sort;
       state.categoryId = Number(action.payload.categoryId);
       state.currentPage = Number(action.payload.currentPage);
+      state.searchValue = action.payload.searchValue;
     },
   },
 });
 
-export const { setCategoryId, setSort, setFilters, setCurrentPage } = filterSlice.actions;
+export const filterSelector = (state) => state.filter;
+export const sortTypeSelector = (state) => state.filter.sort.sortProperty;
+
+export const { setCategoryId, setSort, setFilters, setCurrentPage, setSearch } =
+  filterSlice.actions;
 
 export default filterSlice.reducer;

@@ -5,25 +5,28 @@ import { Skeleton } from '../PizzaBlock/index';
 import { Categories } from '../Categories';
 import { Sort } from '../Sort';
 import { Pagination } from '../Pagination/Pagination';
-import { searchContext } from '../../App';
 import { useSelector, useDispatch } from 'react-redux';
-import { setCategoryId, setCurrentPage, setFilters } from '../../redux/slices/filterSlice';
+import {
+  filterSelector,
+  setCategoryId,
+  setCurrentPage,
+  setFilters,
+  sortTypeSelector,
+} from '../../redux/slices/filterSlice';
+import { fetchPizzas, pizzaSelector } from '../../redux/slices/pizzaSlice';
 import { useSearchParams } from 'react-router-dom';
 import { values } from '../Sort';
 
 export const Home = () => {
   // redux and other lib
-  const categoryId = useSelector((state) => state.filter.categoryId);
+  const { categoryId, currentPage, searchValue } = useSelector(filterSelector);
   const dispatch = useDispatch();
-  const sortType = useSelector((state) => state.filter.sort.sortProperty);
-  const { searchPizza } = React.useContext(searchContext);
+  const sortType = useSelector(sortTypeSelector);
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentPage = useSelector((state) => state.filter.currentPage);
+  const { pizza, status } = useSelector(pizzaSelector);
 
   // states
   const isMounted = React.useRef(false);
-  const [pizzas, setPizzas] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(true);
 
   //custom func
   const setOnClickCategoryyId = (index) => {
@@ -32,25 +35,24 @@ export const Home = () => {
 
   //fetch all content
   React.useEffect(() => {
-    setIsLoading(true);
-
     const order = sortType.includes('-') ? 'asc' : 'desc';
     const sortBy = sortType.replace('-', '');
     const category = categoryId > 0 ? `category=${categoryId}` : '';
-    const search = searchPizza ? `&search=${searchPizza}` : '';
+    const search = searchValue ? `&search=${searchValue}` : '';
 
-    fetch(
-      `https://62a3ae4f21232ff9b22442a9.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data) {
-          setPizzas(data);
-          setIsLoading(false);
-        }
-      });
+    dispatch(
+      fetchPizzas({
+        order,
+        sortBy,
+        category,
+        search,
+        currentPage,
+      }),
+    );
+
     window.scrollTo(0, 0);
-  }, [categoryId, sortType, searchPizza, currentPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categoryId, sortType, searchValue, currentPage]);
 
   //query params
 
@@ -60,6 +62,7 @@ export const Home = () => {
         sortType,
         categoryId,
         currentPage,
+        searchValue,
       };
       setSearchParams(params);
     }
@@ -67,18 +70,20 @@ export const Home = () => {
     isMounted.current = true;
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categoryId, sortType, currentPage]);
+  }, [categoryId, sortType, currentPage, searchValue]);
 
   React.useEffect(() => {
     if (
       searchParams.has('sortType') &&
       searchParams.has('categoryId') &&
-      searchParams.has('currentPage')
+      searchParams.has('currentPage') &&
+      searchParams.has('searchValue')
     ) {
       const params = {
         sort: searchParams.get('sortType'),
         categoryId: searchParams.get('categoryId'),
         currentPage: searchParams.get('currentPage'),
+        searchValue: searchParams.get('searchValue'),
       };
 
       const sort = values.find((obj) => obj.sortProperty === params.sort);
@@ -94,7 +99,7 @@ export const Home = () => {
 
   //render
   const skeleton = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
-  const piazzaContent = pizzas.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />);
+  const piazzaContent = pizza.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />);
 
   return (
     <div className="container">
@@ -102,8 +107,15 @@ export const Home = () => {
         <Categories categoryId={categoryId} setId={(index) => setOnClickCategoryyId(index)} />
         <Sort />
       </div>
-      <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">{isLoading ? skeleton : piazzaContent}</div>
+      <h2 className="content__title">Всі піцци</h2>
+      {status === 'error' ? (
+        <div className="content__error-info">
+          <h2>Виникла помилка 😕</h2>
+          <p>Упс, нажаль піцци відсутні, спробуйте пізніше</p>
+        </div>
+      ) : (
+        <div className="content__items">{status === 'pending' ? skeleton : piazzaContent}</div>
+      )}
       <Pagination setCurrentPage={(index) => dispatch(setCurrentPage(index))} />
     </div>
   );
