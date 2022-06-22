@@ -5,31 +5,31 @@ import { Skeleton } from '../PizzaBlock/index';
 import { Categories } from '../Categories';
 import { Sort } from '../Sort';
 import { Pagination } from '../Pagination/Pagination';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   filterSelector,
   setCategoryId,
-  setCurrentPage,
   setFilters,
   sortTypeSelector,
 } from '../../redux/slices/filterSlice';
 import { fetchPizzas, pizzaSelector } from '../../redux/slices/pizzaSlice';
 import { useSearchParams } from 'react-router-dom';
 import { values } from '../Sort';
+import { useAppDispatch } from '../../redux/store';
 
-export const Home = () => {
+export const Home: React.FC = () => {
   // redux and other lib
   const { categoryId, currentPage, searchValue } = useSelector(filterSelector);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const sortType = useSelector(sortTypeSelector);
   const [searchParams, setSearchParams] = useSearchParams();
   const { pizza, status } = useSelector(pizzaSelector);
 
   // states
-  const isMounted = React.useRef(false);
+  const isMounted = React.useRef<boolean>(false);
 
   //custom func
-  const setOnClickCategoryyId = (index) => {
+  const setOnClickCategoryyId = (index: number) => {
     dispatch(setCategoryId(index));
   };
 
@@ -46,7 +46,7 @@ export const Home = () => {
         sortBy,
         category,
         search,
-        currentPage,
+        currentPage: String(currentPage),
       }),
     );
 
@@ -58,7 +58,7 @@ export const Home = () => {
 
   React.useEffect(() => {
     if (isMounted.current) {
-      let params = {
+      let params:any = {
         sortType,
         categoryId,
         currentPage,
@@ -87,6 +87,7 @@ export const Home = () => {
       };
 
       const sort = values.find((obj) => obj.sortProperty === params.sort);
+
       dispatch(
         setFilters({
           ...params,
@@ -99,16 +100,19 @@ export const Home = () => {
 
   //render
   const skeleton = [...new Array(6)].map((_, index) => <Skeleton key={index} />);
-  const piazzaContent = pizza.map((pizza) => <PizzaBlock key={pizza.id} {...pizza} />);
+  const piazzaContent = pizza.map((pizza: any) => <PizzaBlock key={pizza.id} {...pizza} />);
 
   return (
     <div className="container">
       <div className="content__top">
-        <Categories categoryId={categoryId} setId={(index) => setOnClickCategoryyId(index)} />
+        <Categories
+          categoryId={categoryId}
+          setId={(index: number) => setOnClickCategoryyId(index)}
+        />
         <Sort />
       </div>
       <h2 className="content__title">Всі піцци</h2>
-      {status === 'error' ? (
+      {status === 'rejected' ? (
         <div className="content__error-info">
           <h2>Виникла помилка 😕</h2>
           <p>Упс, нажаль піцци відсутні, спробуйте пізніше</p>
@@ -116,7 +120,7 @@ export const Home = () => {
       ) : (
         <div className="content__items">{status === 'pending' ? skeleton : piazzaContent}</div>
       )}
-      <Pagination setCurrentPage={(index) => dispatch(setCurrentPage(index))} />
+      <Pagination />
     </div>
   );
 };

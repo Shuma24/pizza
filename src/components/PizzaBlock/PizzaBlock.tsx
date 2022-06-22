@@ -1,36 +1,47 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { addProduct, cartSelectorById } from '../../redux/slices/cartSlice';
+import { useSelector } from 'react-redux';
+import { addProduct, cartItem, cartSelectorById } from '../../redux/slices/cartSlice';
+import { useAppDispatch } from '../../redux/store';
+
+
+interface PizzaBlockProps {
+   id: string, 
+   imageUrl:string, 
+   title:string, 
+   types: number[],
+   sizes: number[],  
+   price: number,
+}
 
 // values
 const pizzaTypes = ['тонкое', 'традиционное'];
 
-export function PizzaBlock(props) {
+export const PizzaBlock: React.FC<PizzaBlockProps> = ({ id, imageUrl, title, types, sizes, price }) => {
   //lib
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   //states
-  const [activeType, setActiveType] = React.useState(0);
-  const [activeSize, setActiveSize] = React.useState(0);
-  const { id, imageUrl, title, types, sizes, price } = props;
+  const [activeType, setActiveType] = React.useState<number>(0);
+  const [activeSize, setActiveSize] = React.useState<number>(0);
 
   //logic
-  const setType = (index) => {
+  const setType = (index: number) => {
     setActiveType(index);
   };
 
-  const setSize = (index) => {
+  const setSize = (index: number) => {
     setActiveSize(index);
   };
 
   const onClickAdd = () => {
-    const product = {
+    const product: cartItem = {
       id,
       title,
       price,
       imageUrl,
       types: pizzaTypes[activeType],
       sizes: sizes[activeSize],
+      count: 0
     };
     dispatch(addProduct(product));
   };
@@ -86,4 +97,4 @@ export function PizzaBlock(props) {
       </div>
     </div>
   );
-}
+};

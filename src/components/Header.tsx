@@ -4,11 +4,11 @@ import { Search } from './Search/Search';
 import { useSelector } from 'react-redux';
 import { cartSelector } from '../redux/slices/cartSlice';
 
-export function Header() {
+export function Header(): JSX.Element {
   //values
-  const { product, totalPirce } = useSelector(cartSelector);
+  const { product, totalPrice} = useSelector(cartSelector);
 
-  const totalCount = product.reduce((sum, item) => sum + item.count, 0);
+  const totalCount = product.reduce((sum: number, item: any) => sum + item.count, 0);
 
   //render
   return (
@@ -26,7 +26,7 @@ export function Header() {
         <Search />
         <div className="header__cart">
           <Link to="/cart" className="button button--cart">
-            <span>{`${totalPirce} ₴`}</span>
+            <span>{`${totalPrice} ₴`}</span>
             <div className="button__delimiter"></div>
             <svg
               width="18"

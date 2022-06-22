@@ -6,10 +6,10 @@ import { Home } from './components/pages/Home';
 import { NotFound } from './components/pages/NotFound';
 import { Routes, Route } from 'react-router-dom';
 import { Cart } from './components/pages/Cart';
+import { Pizzatest } from './components/pizzatest';
 
-export const searchContext = React.createContext();
 
-function App() {
+const App: React.FC = () => {
   return (
     <div className="wrapper">
       <Header />
@@ -17,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/pizza/:id" element={<Pizzatest />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

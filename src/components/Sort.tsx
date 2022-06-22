@@ -1,8 +1,14 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setSort, filterSelector } from '../redux/slices/filterSlice';
 
-export const values = [
+
+type Values = {
+  name: string,
+  sortProperty: string
+}
+
+export const values: Values[] = [
   {
     name: 'популярності (DESC)',
     sortProperty: 'rating',
@@ -29,27 +35,28 @@ export const values = [
   },
 ];
 
-export function Sort() {
+export function Sort(): JSX.Element {
   //libs
   const dispatch = useDispatch();
-  const sortRef = useRef();
+  const sortRef = React.useRef<HTMLDivElement>(null);
 
   //values
   const { sort } = useSelector(filterSelector);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState<boolean>(false);
 
   //logic page
   const showHideSort = () => {
     setOpen(!open);
   };
 
-  const selectValues = (obj) => {
+  const selectValues = (obj: Values) => {
     dispatch(setSort(obj));
     setOpen(false);
   };
 
   React.useEffect(() => {
-    const handleClick = (event) => {
+    const handleClick = (event: any) => {
+      
       if (!event.path.includes(sortRef.current)) {
         setOpen(false);
       }
