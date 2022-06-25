@@ -6,7 +6,7 @@ type CategoriesProps = {
   setId: (arg: number) => void,
 }
 
-export const Categories: React.FC<CategoriesProps> = ({ categoryId, setId }) => {
+export const Categories: React.FC<CategoriesProps> = React.memo(({ categoryId, setId }) => {
   
   const categories: string[] = ['Всі', 'Мясні', 'Веган', 'Гриль', 'Остра', 'Закрита'];
 
@@ -30,4 +30,4 @@ export const Categories: React.FC<CategoriesProps> = ({ categoryId, setId }) => 
       </ul>
     </div>
   );
-}
+})

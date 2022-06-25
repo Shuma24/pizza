@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { setSort, filterSelector } from '../redux/slices/filterSlice';
-
+import { filterSelector } from '../redux/slices/filter/selector';
+import { setSort } from '../redux/slices/filter/slice';
 
 type Values = {
-  name: string,
-  sortProperty: string
-}
+  name: string;
+  sortProperty: string;
+};
 
 export const values: Values[] = [
   {
@@ -35,7 +35,7 @@ export const values: Values[] = [
   },
 ];
 
-export function Sort(): JSX.Element {
+export const Sort: React.FC = React.memo(() => {
   //libs
   const dispatch = useDispatch();
   const sortRef = React.useRef<HTMLDivElement>(null);
@@ -56,7 +56,6 @@ export function Sort(): JSX.Element {
 
   React.useEffect(() => {
     const handleClick = (event: any) => {
-      
       if (!event.path.includes(sortRef.current)) {
         setOpen(false);
       }
@@ -103,4 +102,4 @@ export function Sort(): JSX.Element {
       )}
     </div>
   );
-}
+});

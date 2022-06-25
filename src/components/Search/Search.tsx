@@ -1,6 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { filterSelector, setSearch } from '../../redux/slices/filterSlice';
+import { filterSelector } from '../../redux/slices/filter/selector';
+import { setSearch } from '../../redux/slices/filter/slice';
+
 import { useAppDispatch } from '../../redux/store';
 import styles from './search.module.scss';
 

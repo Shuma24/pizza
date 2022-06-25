@@ -6,18 +6,16 @@ import { Categories } from '../Categories';
 import { Sort } from '../Sort';
 import { Pagination } from '../Pagination/Pagination';
 import { useSelector } from 'react-redux';
-import {
-  filterSelector,
-  setCategoryId,
-  setFilters,
-  sortTypeSelector,
-} from '../../redux/slices/filterSlice';
-import { fetchPizzas, pizzaSelector } from '../../redux/slices/pizzaSlice';
+
 import { useSearchParams } from 'react-router-dom';
 import { values } from '../Sort';
 import { useAppDispatch } from '../../redux/store';
+import { filterSelector, sortTypeSelector } from '../../redux/slices/filter/selector';
+import { pizzaSelector } from '../../redux/slices/pizza/selector';
+import { setCategoryId, setFilters } from '../../redux/slices/filter/slice';
+import { fetchPizzas } from '../../redux/slices/pizza/asyncAction';
 
-export const Home: React.FC = () => {
+const Home: React.FC = () => {
   // redux and other lib
   const { categoryId, currentPage, searchValue } = useSelector(filterSelector);
   const dispatch = useAppDispatch();
@@ -27,14 +25,17 @@ export const Home: React.FC = () => {
 
   // states
   const isMounted = React.useRef<boolean>(false);
+  const isSearch = React.useRef<boolean>(false);
 
   //custom func
-  const setOnClickCategoryyId = (index: number) => {
+  const setOnClickCategoryyId = React.useCallback((index: number) => {
     dispatch(setCategoryId(index));
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   //fetch all content
-  React.useEffect(() => {
+
+  const fetch = () => {
     const order = sortType.includes('-') ? 'asc' : 'desc';
     const sortBy = sortType.replace('-', '');
     const category = categoryId > 0 ? `category=${categoryId}` : '';
@@ -49,8 +50,17 @@ export const Home: React.FC = () => {
         currentPage: String(currentPage),
       }),
     );
+  };
 
+  React.useEffect(() => {
     window.scrollTo(0, 0);
+
+    if (!isSearch.current) {
+      fetch();
+    }
+
+    isSearch.current = false;
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryId, sortType, searchValue, currentPage]);
 
@@ -58,7 +68,7 @@ export const Home: React.FC = () => {
 
   React.useEffect(() => {
     if (isMounted.current) {
-      let params:any = {
+      let params: any = {
         sortType,
         categoryId,
         currentPage,
@@ -94,7 +104,9 @@ export const Home: React.FC = () => {
           sort,
         }),
       );
+      isSearch.current = true;
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -124,3 +136,5 @@ export const Home: React.FC = () => {
     </div>
   );
 };
+
+export default Home;

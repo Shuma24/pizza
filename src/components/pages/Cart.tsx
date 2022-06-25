@@ -1,11 +1,11 @@
-
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { CartItem } from '../CartItem';
-import { cartSelector, clearProduct } from '../../redux/slices/cartSlice';
+import { clearProduct } from '../../redux/slices/cart/slice';
 import { CarEmpty } from '../CarEmpty';
+import { cartSelector } from '../../redux/slices/cart/selector';
 
-export function Cart(): JSX.Element {
+const Cart: React.FC = () => {
   const dispatch = useDispatch();
   const { product, totalPrice } = useSelector(cartSelector);
 
@@ -20,7 +20,7 @@ export function Cart(): JSX.Element {
     dispatch(clearProduct());
   };
 
-  const totalCount = product.reduce((sum:number, item:any) => sum + item.count, 0);
+  const totalCount = product.reduce((sum: number, item: any) => sum + item.count, 0);
 
   if (!totalPrice) {
     return <CarEmpty />;
@@ -102,7 +102,7 @@ export function Cart(): JSX.Element {
           </div>
         </div>
         <div className="content__items">
-          {product.map((product:any) => (
+          {product.map((product: any) => (
             <CartItem {...product} key={product.id} />
           ))}
         </div>
@@ -144,4 +144,6 @@ export function Cart(): JSX.Element {
       </div>
     </div>
   );
-}
+};
+
+export default Cart;
